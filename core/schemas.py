@@ -1,35 +1,35 @@
-from pydantic import BaseModel, field_validator, Field
-from uuid import UUID
+from pydantic import BaseModel, Field, EmailStr
+from datetime import date
 
-class BaseCheckSchema(BaseModel):
-    id: UUID
-    desc: str = Field(..., description="Enter your description, max 50 characters.")
-    amount: float
 
-    @field_validator("desc")
-    def validate_desc(cls, value):
-        if len(value) > 50:
-            raise ValueError("Please enter less than 50 characters.")
-        return value
+NAME_MAX_LENGTH = 30
+DESC_MAX_LENGTH = 50
+PASSWORD_MIN_LENGTH = 4
+PASSWORD_MAX_LENGTH = 15
+AMOUNT_MIN_VALUE = 0
 
-    @field_validator("amount")
-    def validate_amount(cls, value):
-        if value <= 0:
-            raise ValueError("Amount must be greater than 0.")
-        return value
 
-class CreateCostSchema(BaseModel):
-    desc: str = Field(..., description="Enter your description, max 50 characters.")
-    amount: float
+class BaseExpenseSchema(BaseModel):
+    id: int
+    user_id: int
+    desc: str = Field(..., max_length=DESC_MAX_LENGTH)
+    amount: float = Field(..., gt=AMOUNT_MIN_VALUE)
+    expense_date: date
 
-    @field_validator("desc")
-    def validate_desc(cls, value):
-        if len(value) > 50:
-            raise ValueError("Please enter less than 50 characters.")
-        return value
 
-    @field_validator("amount")
-    def validate_amount(cls, value):
-        if value <= 0:
-            raise ValueError("Amount must be greater than 0.")
-        return value
+class CreateExpenseSchema(BaseModel):
+    desc: str = Field(..., max_length=DESC_MAX_LENGTH)
+    amount: float = Field(..., gt=AMOUNT_MIN_VALUE)
+    expense_date: date | None = None
+
+class BaseUserSchema(BaseModel):
+    id: int
+    name: str = Field(..., max_length=NAME_MAX_LENGTH)
+    email: EmailStr | None = None
+    expenses: list[BaseExpenseSchema] = []
+
+
+class CreateUserSchema(BaseModel):
+    name: str = Field(..., max_length=NAME_MAX_LENGTH)
+    email: EmailStr | None = None
+    password: str = Field(..., min_length=PASSWORD_MIN_LENGTH, max_length=PASSWORD_MAX_LENGTH)
