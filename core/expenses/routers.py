@@ -13,12 +13,12 @@ from i18n.translator import get_locale_lang, get_translator
 router = APIRouter(prefix="/expenses", tags=["expenses"])
 
 
-@router.post('/create', response_model=ExpenseResponseSchema)
+@router.post("/create", response_model=ExpenseResponseSchema)
 async def create_expense(
     req_expense: BaseExpenseSchema,
     user: UserModel = Depends(get_auth_username),
     db: Session = Depends(get_db),
-    locale: str = Depends(get_locale_lang)
+    locale: str = Depends(get_locale_lang),
 ):
     new_expense = ExpenseModel(
         user_id=user.id,
@@ -26,20 +26,19 @@ async def create_expense(
         amount=req_expense.amount,
     )
     _ = get_translator(locale)
-    
+
     db.add(new_expense)
     db.commit()
     db.refresh(new_expense)
     return {
         "message": _("task_created"),
-        "new expense" : new_expense,
-        }
+        "new expense": new_expense,
+    }
 
 
 @router.get("/get-all", response_model=List[ExpenseResponseSchema])
 async def get_all_expenses(
-    db: Session = Depends(get_db),
-    user: UserModel = Depends(get_auth_username)
+    db: Session = Depends(get_db), user: UserModel = Depends(get_auth_username)
 ):
     query = db.query(ExpenseModel).filter_by(user_id=user.id)
     return query
@@ -49,9 +48,13 @@ async def get_all_expenses(
 async def delete_expenses(
     expense_id: int,
     db: Session = Depends(get_db),
-    user: UserModel = Depends(get_auth_username)
+    user: UserModel = Depends(get_auth_username),
 ):
-    expense = db.query(ExpenseModel).filter_by(id=expense_id, user_id=user.id).first()
+    expense = (
+        db.query(ExpenseModel)
+        .filter_by(id=expense_id, user_id=user.id)
+        .first()
+    )
     if not expense:
         raise HTTPException(status_code=404, detail="Expense not found.")
 

@@ -1,4 +1,12 @@
-from sqlalchemy import Float, Integer, Column, String, ForeignKey, DateTime, func
+from sqlalchemy import (
+    Float,
+    Integer,
+    Column,
+    String,
+    ForeignKey,
+    DateTime,
+    func,
+)
 from core.database import Base
 from sqlalchemy.orm import relationship
 

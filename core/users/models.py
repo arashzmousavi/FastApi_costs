@@ -14,11 +14,13 @@ class UserModel(Base):
     password = Column(String, nullable=False)
     created_date = Column(DateTime, server_default=func.now())
     updated_date = Column(
-        DateTime, server_default=func.now(), server_onupdate=func.now())
+        DateTime, server_default=func.now(), server_onupdate=func.now()
+    )
 
     token = relationship("TokenModel", back_populates="user", uselist=False)
     expenses = relationship(
-        "ExpenseModel", back_populates="user", cascade="all, delete-orphan")
+        "ExpenseModel", back_populates="user", cascade="all, delete-orphan"
+    )
 
     def hash_password(self, raw_password: str) -> str:
         return pwd_context.hash(raw_password)

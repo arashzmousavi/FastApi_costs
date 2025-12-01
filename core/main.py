@@ -9,7 +9,6 @@ tags_metadata = [
         "name": "authenticates",
         "description": "Operations with authes, including creating, updating, and deleting authes.",
     },
-
 ]
 
 
@@ -32,7 +31,7 @@ app = FastAPI(
         "name": "MIT",
     },
     lifespan=lifspan,
-    openapi_tags=tags_metadata
+    openapi_tags=tags_metadata,
 )
 
 app.include_router(users_routes)

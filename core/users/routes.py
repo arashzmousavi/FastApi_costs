@@ -15,15 +15,17 @@ router = APIRouter(prefix="/users", tags=["users"])
 async def user_register(
     request: UserRegisterSchema,
     db: Session = Depends(get_db),
-    locale: str = Depends(get_locale_lang)
+    locale: str = Depends(get_locale_lang),
 ):
-    exist_user = db.query(UserModel).filter_by(
-        username=request.username.lower()).first()
+    exist_user = (
+        db.query(UserModel)
+        .filter_by(username=request.username.lower())
+        .first()
+    )
     _ = get_translator(locale)
     if exist_user:
         raise HTTPException(
-            status_code=status.HTTP_409_CONFLICT,
-            detail=_("user_not_found")
+            status_code=status.HTTP_409_CONFLICT, detail=_("user_not_found")
         )
     user_obj = UserModel(username=request.username.lower())
     user_obj.set_password(request.password)
@@ -38,21 +40,23 @@ async def user_login(
     request: UserLoginSchema,
     response: Response,
     db: Session = Depends(get_db),
-    locale: str = Depends(get_locale_lang)
+    locale: str = Depends(get_locale_lang),
 ):
-    user_obj = db.query(UserModel).filter_by(
-        username=request.username.lower()).first()
+    user_obj = (
+        db.query(UserModel)
+        .filter_by(username=request.username.lower())
+        .first()
+    )
     _ = get_translator(locale)
     if not user_obj:
         raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=_("user_not_found")
+            status_code=status.HTTP_400_BAD_REQUEST, detail=_("user_not_found")
         )
     user_verify = user_obj.verify_password(request.password)
     if not user_verify:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail=_("invalid_password")
+            detail=_("invalid_password"),
         )
 
     access_token = generate_access_token(user_obj.id)
@@ -69,7 +73,7 @@ async def user_login(
     return {
         "message": _("login_success"),
         "access_token": access_token,
-        "token_type": "bearer"
+        "token_type": "bearer",
     }
 
 
@@ -78,10 +82,7 @@ async def user_logout(
     response: Response,
 ):
     response.delete_cookie(
-        key="refresh_token",
-        secure=True,
-        httponly=True,
-        samesite="strict"
+        key="refresh_token", secure=True, httponly=True, samesite="strict"
     )
 
 
@@ -95,7 +96,7 @@ async def user_refresh_token(request: UserRefreshTokenSchema):
     return JSONResponse(
         content={
             "detail": "user token refresehd.",
-            "access_token": access_token
+            "access_token": access_token,
         }
     )
 
@@ -104,9 +105,6 @@ async def user_refresh_token(request: UserRefreshTokenSchema):
 async def get_all_users(db: Session = Depends(get_db)):
     all_users = db.query(UserModel.id, UserModel.username).all()
     user_list = [
-        {"id": user.id, "username": user.username}
-        for user in all_users
+        {"id": user.id, "username": user.username} for user in all_users
     ]
     return {"users": user_list}
-
-

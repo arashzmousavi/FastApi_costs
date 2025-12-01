@@ -3,10 +3,7 @@ from fastapi import Header, Query
 from pathlib import Path
 
 
-SUPPORTED_LANGUAGES = {
-    "fa": "fa_IR",
-    "en": "en_US"
-}
+SUPPORTED_LANGUAGES = {"fa": "fa_IR", "en": "en_US"}
 
 
 BASE_DIR = Path(__file__).parent
@@ -14,14 +11,11 @@ BASE_DIR = Path(__file__).parent
 
 def get_locale_lang(
     lang_header: str | None = Header(
-        None, 
-        alias="lang",
-        description="enter your language.example: fa"
+        None, alias="lang", description="enter your language.example: fa"
     ),
     lang_query: str | None = Query(
-        None,
-        description="enter your language.example: fa"
-    )
+        None, description="enter your language.example: fa"
+    ),
 ):
     lang = lang_query or lang_header
     if not lang:
@@ -41,7 +35,3 @@ def get_translator(locale: str):
         return translator.gettext
     except FileNotFoundError:
         return lambda s: s
-
-
-
-
