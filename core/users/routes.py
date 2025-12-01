@@ -6,6 +6,7 @@ from users.schemas import *
 from sqlalchemy.orm import Session
 from core.database import get_db
 from auth.jwt_auth import *
+from i18n.translator import get_locale_lang, get_translator
 
 router = APIRouter(prefix="/users", tags=["users"])
 
@@ -13,21 +14,23 @@ router = APIRouter(prefix="/users", tags=["users"])
 @router.post("/register")
 async def user_register(
     request: UserRegisterSchema,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    locale: str = Depends(get_locale_lang)
 ):
     exist_user = db.query(UserModel).filter_by(
         username=request.username.lower()).first()
+    _ = get_translator(locale)
     if exist_user:
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
-            detail="username already exists"
+            detail=_("user_not_found")
         )
     user_obj = UserModel(username=request.username.lower())
     user_obj.set_password(request.password)
     db.add(user_obj)
     db.commit()
     db.refresh(user_obj)
-    return JSONResponse(content={"detail": "user registered successfully."})
+    return JSONResponse(content={"detail": _("welcome_message")})
 
 
 @router.post("/login")
@@ -35,19 +38,21 @@ async def user_login(
     request: UserLoginSchema,
     response: Response,
     db: Session = Depends(get_db),
+    locale: str = Depends(get_locale_lang)
 ):
     user_obj = db.query(UserModel).filter_by(
         username=request.username.lower()).first()
+    _ = get_translator(locale)
     if not user_obj:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="user doesnt exists."
+            detail=_("user_not_found")
         )
     user_verify = user_obj.verify_password(request.password)
     if not user_verify:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="password is invalid."
+            detail=_("invalid_password")
         )
 
     access_token = generate_access_token(user_obj.id)
@@ -59,9 +64,10 @@ async def user_login(
         secure=True,
         samesite="strict",
     )
+    _ = get_translator(locale)
 
     return {
-        "message": "logged in successfully.",
+        "message": _("login_success"),
         "access_token": access_token,
         "token_type": "bearer"
     }

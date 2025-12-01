@@ -1,0 +1,7 @@
+fastapi[all]>=0.121.3,<=0.122.0
+alembic>=1.17.2,<=1.18.0
+passlib[bcrypt]
+bcrypt==4.3.0
+pyjwt
+faker
+python-gettext

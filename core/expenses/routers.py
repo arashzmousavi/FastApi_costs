@@ -7,6 +7,7 @@ from sqlalchemy.orm import Session
 from core.database import get_db
 from auth.jwt_auth import *
 from expenses.schemas import *
+from i18n.translator import get_locale_lang, get_translator
 
 
 router = APIRouter(prefix="/expenses", tags=["expenses"])
@@ -17,16 +18,22 @@ async def create_expense(
     req_expense: BaseExpenseSchema,
     user: UserModel = Depends(get_auth_username),
     db: Session = Depends(get_db),
+    locale: str = Depends(get_locale_lang)
 ):
     new_expense = ExpenseModel(
         user_id=user.id,
         desc=req_expense.desc,
         amount=req_expense.amount,
     )
+    _ = get_translator(locale)
+    
     db.add(new_expense)
     db.commit()
     db.refresh(new_expense)
-    return new_expense
+    return {
+        "message": _("task_created"),
+        "new expense" : new_expense,
+        }
 
 
 @router.get("/get-all", response_model=List[ExpenseResponseSchema])
