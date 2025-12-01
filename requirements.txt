@@ -5,3 +5,4 @@ bcrypt==4.3.0
 pyjwt
 faker
 python-gettext
+flake8
