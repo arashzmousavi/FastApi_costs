@@ -6,3 +6,4 @@ pyjwt
 faker
 python-gettext
 flake8
+black
