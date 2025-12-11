@@ -7,3 +7,5 @@ faker
 python-gettext
 flake8
 black
+pytest
+
