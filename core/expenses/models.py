@@ -13,10 +13,14 @@ from sqlalchemy.orm import relationship
 
 class ExpenseModel(Base):
     __tablename__ = "expenses"
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    user_id = Column(Integer, ForeignKey("users.id"))
-    desc = Column(String(50))
-    amount = Column(Float)
-    expense_date = Column(DateTime, server_default=func.now())
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(
+        Integer, ForeignKey("users.id"), nullable=False, index=True
+    )
+    desc = Column(String(100), nullable=False)
+    amount = Column(Float, nullable=False)
+    expense_date = Column(
+        DateTime(timezone=True), server_default=func.now(), nullable=False
+    )
 
     user = relationship("UserModel", back_populates="expenses")

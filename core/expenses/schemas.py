@@ -7,9 +7,7 @@ class BaseExpenseSchema(BaseModel):
     amount: float
 
 
-class ExpenseResponseSchema(BaseModel):
+class ExpenseResponseSchema(BaseExpenseSchema):
     id: int
     user_id: int
-    desc: str
-    amount: float
     expense_date: datetime

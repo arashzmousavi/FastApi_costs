@@ -1,4 +1,11 @@
-from fastapi import APIRouter, Depends, HTTPException, status, Response
+from fastapi import (
+    APIRouter,
+    Cookie,
+    Depends,
+    HTTPException,
+    status,
+    Response,
+)
 from fastapi.responses import JSONResponse
 from users.models import UserModel
 from users.schemas import *
@@ -83,19 +90,29 @@ async def user_logout(
     response.delete_cookie(
         key="refresh_token", secure=True, httponly=True, samesite="strict"
     )
+    return JSONResponse(
+        status_code=200, content={"message": "Cookie deleted."}
+    )
 
 
 @router.post("/refresh")
-async def user_refresh_token(request: UserRefreshTokenSchema):
-    refresh_token = request.cookies.get("refresh_token")
+async def user_refresh_token(
+    refresh_token: str = Cookie(None, alias="refresh_token")
+):
     if not refresh_token:
-        raise HTTPException(401, "No refresh token")
-    user_id = decode_refresh_token(request.token)
-    access_token = generate_access_token(user_id)
+        raise HTTPException(
+            status_code=401, detail="No refresh token provided"
+        )
+    try:
+        user_id = decode_refresh_token(refresh_token)
+    except HTTPException as e:
+        raise e
+    new_access_token = generate_access_token(user_id)
+
     return JSONResponse(
         content={
-            "detail": "user token refresehd.",
-            "access_token": access_token,
+            "token_type": "bearer",
+            "access_token": new_access_token,
         }
     )
 

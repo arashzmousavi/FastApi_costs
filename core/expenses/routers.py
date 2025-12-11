@@ -30,17 +30,23 @@ async def create_expense(
     db.add(new_expense)
     db.commit()
     db.refresh(new_expense)
-    return {
-        "message": _("task_created"),
-        "new expense": new_expense,
-    }
+    return new_expense
 
 
 @router.get("/get-all", response_model=List[ExpenseResponseSchema])
 async def get_all_expenses(
     db: Session = Depends(get_db), user: UserModel = Depends(get_auth_username)
 ):
-    query = db.query(ExpenseModel).filter_by(user_id=user.id)
+    query = db.query(ExpenseModel).filter_by(user_id=user.id).all()
+    return query
+
+
+@router.get("/{item_id}", response_model=ExpenseResponseSchema)
+async def get_expenses(
+    item_id: int,
+    db: Session = Depends(get_db),
+):
+    query = db.query(ExpenseModel).filter_by(id=item_id).first()
     return query
 
 
