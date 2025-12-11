@@ -1,7 +1,9 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
+from fastapi.responses import JSONResponse
 from contextlib import asynccontextmanager
 from users.routes import router as users_routes
 from expenses.routers import router as expense_routes
+from expenses.exceptions import ExpenseNotFoundError
 
 
 tags_metadata = [
@@ -36,3 +38,21 @@ app = FastAPI(
 
 app.include_router(users_routes)
 app.include_router(expense_routes)
+
+
+@app.exception_handler(ExpenseNotFoundError)
+async def expense_not_found_handler(
+    request: Request,
+    exc: ExpenseNotFoundError
+):
+    error_response = {
+        "error": True,
+        "message": str(exc.message),
+        "path": request.url.path,
+        "method": request.method,
+    }
+
+    return JSONResponse(
+        status_code=exc.status_code,
+        content=error_response
+    )

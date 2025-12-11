@@ -8,6 +8,7 @@ from core.database import get_db
 from auth.jwt_auth import *
 from expenses.schemas import *
 from i18n.translator import get_locale_lang, get_translator
+from expenses.exceptions import ExpenseNotFoundError
 
 
 router = APIRouter(prefix="/expenses", tags=["expenses"])
@@ -47,6 +48,8 @@ async def get_expenses(
     db: Session = Depends(get_db),
 ):
     query = db.query(ExpenseModel).filter_by(id=item_id).first()
+    if not query:
+        raise ExpenseNotFoundError(item_id)
     return query
 
 
