@@ -42,8 +42,7 @@ app.include_router(expense_routes)
 
 @app.exception_handler(ExpenseNotFoundError)
 async def expense_not_found_handler(
-    request: Request,
-    exc: ExpenseNotFoundError
+    request: Request, exc: ExpenseNotFoundError
 ):
     error_response = {
         "error": True,
@@ -52,7 +51,4 @@ async def expense_not_found_handler(
         "method": request.method,
     }
 
-    return JSONResponse(
-        status_code=exc.status_code,
-        content=error_response
-    )
+    return JSONResponse(status_code=exc.status_code, content=error_response)

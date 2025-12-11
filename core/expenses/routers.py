@@ -65,7 +65,7 @@ async def delete_expenses(
         .first()
     )
     if not expense:
-        raise HTTPException(status_code=404, detail="Expense not found.")
+        raise ExpenseNotFoundError(expense_id)
 
     db.delete(expense)
     db.commit()

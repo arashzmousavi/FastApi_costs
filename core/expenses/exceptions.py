@@ -1,4 +1,3 @@
-
 class ExpenseNotFoundError(Exception):
     def __init__(self, expense_id: int):
         self.status_code = 404
