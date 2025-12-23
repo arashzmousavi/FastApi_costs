@@ -22,7 +22,7 @@ async def lifspan(app: FastAPI):
 
 
 app = FastAPI(
-    title="Auth Application",
+    title="Management Cost",
     description="This is descriptation.",
     version="0.0.1",
     contact={

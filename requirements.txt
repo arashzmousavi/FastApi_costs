@@ -8,4 +8,7 @@ python-gettext
 flake8
 black
 pytest
-
+psycopg2-binary
+apscheduler
+fastapi-cache2[redis]
+fastapi-mail[httpx]
