@@ -23,10 +23,13 @@ if config.config_file_name is not None:
 BASE_DIR = Path(__file__).resolve().parent.parent
 ENV_PATH = BASE_DIR / ".env"
 
-
-load_dotenv(ENV_PATH)
+# Load environment variables from the .env file
+if ENV_PATH.exists():
+    load_dotenv(ENV_PATH)
+else:
+    print("Warning: .env file not found. Falling back to global enviroment variables.")
+# Get the database URL from environment variables
 DATABASE_URL = os.getenv("SQLALCHEMY_DATABASE_URL")
-
 
 if DATABASE_URL:
     config.set_main_option("sqlalchemy.url", DATABASE_URL)
@@ -65,7 +68,7 @@ def run_migrations_offline() -> None:
         target_metadata=target_metadata,
         literal_binds=True,
         dialect_opts={"paramstyle": "named"},
-        render_as_batch=True
+        # render_as_batch=True
 
     )
 
@@ -89,7 +92,7 @@ def run_migrations_online() -> None:
     with connectable.connect() as connection:
         context.configure(
             connection=connection, target_metadata=target_metadata,
-            render_as_batch=True
+            # render_as_batch=True
         )
 
         with context.begin_transaction():

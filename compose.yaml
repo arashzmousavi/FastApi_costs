@@ -16,29 +16,17 @@
         timeout: 10s
       ports:
         - "5435:5432"
-
-    # smtp4dev:
-    #   image: rnwood/smtp4dev:v3
-    #   restart: always
-    #   ports:
-    #     - '5000:80'
-    #     - '25:25'
-    #     - '143:143'
-    #     - '110:110'
-    #   volumes:
-    #       - smtp4dev-data:/smtp4dev
-
-    # redis:
-    #   image: redis:alpine
-    #   container_name: redis
-    #   ports:
-    #     - "6379:6379"
-    #   healthcheck:
-    #     test: ["CMD", "redis-cli", "ping"]
-    #     interval: 10s
-    #     retries: 5
-    #     start_period: 30s
-    #     timeout: 10s
+    redis:
+      image: redis:alpine
+      container_name: redis
+      ports:
+        - "6379:6379"
+      healthcheck:
+        test: ["CMD", "redis-cli", "ping"]
+        interval: 10s
+        retries: 5
+        start_period: 30s
+        timeout: 10s
 
     backend:
       build:
@@ -47,15 +35,13 @@
       container_name: backend
       depends_on:
         - db
-        # - redis
+        - redis
       environment:
         SQLALCHEMY_DATABASE_URL: postgresql://postgres:postgres@db:5432/postgres
-        JWT_SECRET_KEY: 8as76j=8s65pa2#&fk$w7ifn(s6r#y+4-7(z@!@=rqp%a9&quo
-        # REDIS_URL: redis://redis:6379
+        JWT_SECRET_KEY: 8as76j=8s65pa2#&fk%w7ifn(s6r#y+4-7(z@!@=rqp%a9&quo
+        REDIS_URL: redis://redis:6379
       ports:
         - "8001:8001"
       command: bash -c 'fastapi dev --host 0.0.0.0 --port 8001'
       volumes:
         - ./core:/usr/src/core
-  # volumes:
-  #   smtp4dev-data:

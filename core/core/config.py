@@ -6,6 +6,7 @@ class Settings(BaseSettings):
     
     SQLALCHEMY_DATABASE_URL: str
     JWT_SECRET_KEY: str = "test"
+    REDIS_URL: str
 
 
 

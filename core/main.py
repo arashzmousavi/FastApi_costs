@@ -4,6 +4,11 @@ from contextlib import asynccontextmanager
 from users.routes import router as users_routes
 from expenses.routers import router as expense_routes
 from expenses.exceptions import ExpenseNotFoundError
+from fastapi_cache import FastAPICache
+from fastapi_cache.backends.redis import RedisBackend
+# from fastapi_cache.decorator import cache
+from redis import asyncio as aioredis
+from core.config import settings
 
 
 tags_metadata = [
@@ -15,9 +20,15 @@ tags_metadata = [
 
 
 @asynccontextmanager
-async def lifspan(app: FastAPI):
+async def lifespan(app: FastAPI):
     print("Application startup.")
+    redis = aioredis.from_url(settings.REDIS_URL)
+    FastAPICache.init(
+        RedisBackend(redis),
+        prefix="fastapi-cache"
+    )
     yield
+    await redis.close()
     print("Application shutdown.")
 
 
@@ -32,7 +43,7 @@ app = FastAPI(
     license_info={
         "name": "MIT",
     },
-    lifespan=lifspan,
+    lifespan=lifespan,
     openapi_tags=tags_metadata,
 )
 
