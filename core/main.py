@@ -62,3 +62,21 @@ async def expense_not_found_handler(
     }
 
     return JSONResponse(status_code=exc.status_code, content=error_response)
+
+from core.celery_conf import sum_number
+
+
+@app.get("/initiate-celery-task", status_code=200)
+async def initiate_celery_task():
+    res_id = sum_number.delay(3,5).id
+    return JSONResponse(content={"detail": res_id})
+
+from celery.result import AsyncResult
+
+@app.get("/check-celery-task-result", status_code=200)
+async def check_celery_task_resutl(task_id: str):
+    resutl = AsyncResult(task_id).ready()
+    return JSONResponse(content={"detail": resutl})
+
+
+
