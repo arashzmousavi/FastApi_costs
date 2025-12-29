@@ -12,3 +12,4 @@ psycopg2-binary
 apscheduler
 fastapi-cache2[redis]
 fastapi-mail[httpx]
+sentry-sdk[fastapi]
