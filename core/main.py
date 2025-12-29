@@ -63,3 +63,8 @@ async def expense_not_found_handler(
     }
 
     return JSONResponse(status_code=exc.status_code, content=error_response)
+
+
+@app.get("/is_ready", status_code=200)
+async def readiness():
+    return JSONResponse(content="ok")
