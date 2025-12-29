@@ -9,4 +9,4 @@ RUN pip install -i https://mirror-pypi.runflare.com/simple  --no-cache-dir --upg
 
 COPY ./core .
 
-# CMD ["fastapi", "dev", "--host", "0.0.0.0", "--port", "8001"]
+CMD ["fastapi", "run", "--host", "0.0.0.0", "--port", "8000"]
