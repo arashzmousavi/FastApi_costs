@@ -1,0 +1,20 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+
+msgid "welcome_message"
+msgstr "به برنامه ما خوش آمدید"
+
+msgid "login_success"
+msgstr "ورود موفقیت آمیز بود"
+
+msgid "user_not_found"
+msgstr "کاربر یافت نشد"
+
+msgid "invalid_password"
+msgstr "رمز عبور نامعتبر"
+
+msgid "task_created"
+msgstr "تسک با موفقیت ایجاد شد"
