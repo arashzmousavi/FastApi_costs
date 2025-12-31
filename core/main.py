@@ -6,7 +6,6 @@ from expenses.routers import router as expense_routes
 from expenses.exceptions import ExpenseNotFoundError
 from fastapi_cache import FastAPICache
 from fastapi_cache.backends.redis import RedisBackend
-# from fastapi_cache.decorator import cache
 from redis import asyncio as aioredis
 from core.config import settings
 
