@@ -14,4 +14,4 @@ fastapi-cache2[redis]
 fastapi-mail[httpx]
 locust
 celery
-
+sentry-sdk[fastapi]

@@ -9,6 +9,7 @@ class Settings(BaseSettings):
     REDIS_URL: str
     CELERY_BROKER_URL: str = "redis://redis:6379/3"
     CELERY_BACKEND_URL: str = "redis://redis:6379/3"
+    SENTRY_DSN: str = "https://09f0d4024e83fbff921a122e95e8a94f@sentry.hamravesh.com/9577"
 
 
 
