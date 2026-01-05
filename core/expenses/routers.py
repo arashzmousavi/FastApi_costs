@@ -14,7 +14,7 @@ from expenses.exceptions import ExpenseNotFoundError
 router = APIRouter(prefix="/expenses", tags=["expenses"])
 
 
-@router.post("/create", response_model=ExpenseResponseSchema)
+@router.post("/", response_model=ExpenseResponseSchema)
 async def create_expense(
     req_expense: BaseExpenseSchema,
     user: UserModel = Depends(get_auth_username),
@@ -53,7 +53,7 @@ async def get_expenses(
     return query
 
 
-@router.delete("/delete/{expense_id}")
+@router.delete("/{expense_id}")
 async def delete_expenses(
     expense_id: int,
     db: Session = Depends(get_db),
