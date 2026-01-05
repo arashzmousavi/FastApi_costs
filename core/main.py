@@ -40,7 +40,7 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(
-    title="Management Cost",
+    title="Cost Management",
     description="This is descriptation.",
     version="0.0.1",
     contact={
